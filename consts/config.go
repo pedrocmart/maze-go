@@ -3,7 +3,7 @@ package consts
 type Migration string
 
 const (
-	AppName         = "DATASTORE"
+	AppName         = "MAZE-GO"
 	HttpHost        = "HTTP_HOST"
 	HttpPort        = "HTTP_PORT"
 	DatabaseURL     = "DB_URL"

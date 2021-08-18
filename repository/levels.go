@@ -8,7 +8,7 @@ import (
 
 type Level interface {
 	Create(*models.Level) (*models.Level, error)
-	FindByLevelID(int64) ([]*models.Level, error)
+	FindByLevelId(int64) ([]*models.Level, error)
 	FindAll() ([]*models.Level, error)
 }
 
@@ -23,7 +23,7 @@ func NewLevelRepository(db *sql.DB) *LevelRepository {
 func (r *LevelRepository) Create(level *models.Level) (*models.Level, error) {
 	var err error
 
-	const queryStr = `INSERT INTO levels (maps) RETURNING id`
+	const queryStr = `INSERT INTO levels (maps) VALUES ($1) RETURNING id`
 
 	tx, err := r.db.Begin()
 	if err != nil {

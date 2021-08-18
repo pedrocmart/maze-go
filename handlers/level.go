@@ -48,8 +48,7 @@ func (r *LevelHandler) PostLevel(params operations.PostLevelParams) middleware.R
 		Success: true,
 		LevelData: struct{ models.Level }{
 			models.Level{
-				ID:   cLevel.Id,
-				Maps: cLevel.Maps,
+				ID: cLevel.Id,
 			},
 		},
 	})
@@ -61,7 +60,7 @@ func (r *LevelHandler) GetLevelID(params operations.GetLevelParams) middleware.R
 	levelId := params.LevelID
 
 	// retrieve all the levels for the player
-	levels, cerr := r.repository.FindByLevelID(levelId)
+	levels, cerr := r.repository.FindByLevelId(levelId)
 	if cerr != nil {
 		return operations.NewGetLevelInternalServerError().WithPayload(&models.BaseResponse{
 			Success: consts.HandlerFailed,
@@ -122,6 +121,7 @@ func (r *LevelHandler) GetLevel(params operations.GetLevelParams) middleware.Res
 func RegisterLevelHandlers(api *operations.MazeGoAPI, levelRepository repository.Level) {
 	levelHandler := NewLevelHandler(levelRepository)
 
-	// PostLevel saves the given Level data to the backend datastore.GetLevel
+	// PostLevel saves the given Level data
 	api.PostLevelHandler = operations.PostLevelHandlerFunc(levelHandler.PostLevel)
+	api.GetLevelHandler = operations.GetLevelHandlerFunc(levelHandler.GetLevel)
 }

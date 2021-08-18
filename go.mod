@@ -14,5 +14,10 @@ require (
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/lib/pq v1.10.2
 	github.com/rubenv/sql-migrate v0.0.0-20210614095031-55d5740dbbcc
+	github.com/sirupsen/logrus v1.8.1
+	github.com/spf13/cobra v0.0.6
+	github.com/spf13/pflag v1.0.3
+	github.com/spf13/viper v1.4.0
+	github.com/ziutek/mymysql v1.5.4 // indirect
 	golang.org/x/net v0.0.0-20210119194325-5f4716e94777
 )

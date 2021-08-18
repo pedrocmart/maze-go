@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/go-openapi/strfmt"
@@ -10,8 +11,8 @@ import (
 type Level struct {
 	Id int64 `json:"id"` // database record ID
 
-	Maps      [][]int64 `json:"resRows"`
-	CreatedAt time.Time `json:"createdAt"`
+	Maps      json.RawMessage `json:"resRows"`
+	CreatedAt time.Time       `json:"createdAt"`
 }
 
 func NewLevel() *Level {
@@ -19,51 +20,37 @@ func NewLevel() *Level {
 }
 
 func (p *Level) FromSwaggerModel(in models.Level) (*Level, error) {
-	round := &Level{
-		Maps: in.Maps,
+	level := &Level{
+		Id: p.Id,
 	}
 
-	// if in.Spins != nil {
-	// 	spins, err := json.Marshal(in.Spins)
-	// 	if err != nil {
-	// 		// TODO err or strong validation
-	// 	}
+	if in.Maps != nil {
+		maps, err := json.Marshal(in.Maps)
+		if err != nil {
+			return nil, err
+		}
 
-	// 	round.Spins = spins
-	// }
+		level.Maps = maps
+	}
 
-	// if in.FreeGames != nil {
-	// 	freeGames, err := json.Marshal(in.FreeGames)
-	// 	if err != nil {
-	// 		// TODO err or strong validation
-	// 	}
-
-	// 	round.FreeGames = freeGames
-	// }
-
-	return round, nil
+	return level, nil
 }
 
 func (p *Level) ToSwagger() (*models.Level, error) {
 	createdAt := strfmt.DateTime(p.CreatedAt)
 
-	// var spinData []*models.Level
-	// if err := json.Unmarshal(p.Spins, &spinData); err != nil {
-	// 	return nil, err
-	// }
-
-	// var freeSpinData []*models.Spin
-	// if err := json.Unmarshal(p.Spins, &freeSpinData); err != nil {
-	// 	return nil, err
-	// }
-
-	round := &models.Level{
-		Maps:      p.Maps,
+	level := &models.Level{
 		ID:        p.Id,
 		CreatedAt: &createdAt,
 	}
 
-	return round, nil
+	var data [][]int64
+	if err := json.Unmarshal(p.Maps, &data); err != nil {
+		return nil, err
+	}
+	level.Maps = data
+
+	return level, nil
 }
 
 // func (p *Level) Validate() error {
