@@ -1,0 +1,143 @@
+swagger: "2.0"
+
+info:
+  description: "Maze Game API"
+  version: "v1"
+  title: "Maze Game"
+
+host: "localhost:5000"
+
+basePath: "/v1"
+
+schemes:
+  - "http"
+
+parameters:
+  levelId:
+    in: "query"
+    name: "levelId"
+    required: true
+    type: "integer"
+
+paths:
+  /level:
+    post:
+      summary: "Record level"
+      parameters:
+        - name: payload
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/LevelRequest"
+      responses:
+        201:
+          description: "201"
+          schema:
+            $ref: "#/definitions/LevelResponse"
+        400:
+          description: "400"
+          schema:
+            $ref: "#/definitions/BaseResponse"
+        404:
+          description: "404"
+          schema:
+            $ref: "#/definitions/BaseResponse"
+        500:
+          description: "500"
+          schema:
+            $ref: "#/definitions/BaseResponse"
+
+    get:
+      summary: "Get levels"
+      parameters:
+        - $ref: "#/parameters/levelId"
+      responses:
+        200:
+          description: "200"
+          schema:
+            $ref: "#/definitions/LevelAllResponse"
+        400:
+          description: "400"
+          schema:
+            $ref: "#/definitions/BaseResponse"
+        404:
+          description: "404"
+          schema:
+            $ref: "#/definitions/BaseResponse"
+        500:
+          description: "500"
+          schema:
+            $ref: "#/definitions/BaseResponse"
+
+definitions:
+  Level:
+    title: Level
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Level ID
+        example: 12
+        x-nullable: false
+      maps:
+        type: array
+        items:
+          type: array
+          items:
+            type: integer
+        x-nullable: false
+        example: [[5,2,4],[2,2,1],[1,2,5],[3,3,1],[2,2,0]]
+      createdAt:
+        type: string
+        format: date-time
+        x-nullable: true
+    required:
+      - maps
+
+  LevelRequest:
+    allOf:
+      - $ref: "#/definitions/Level"
+
+  LevelResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+        x-nullable: false
+      success:
+        type: boolean
+        description: "Success"
+        example: true
+        x-nullable: false
+      message:
+        type: string
+        example: "error message"
+      levelData:
+        type: object
+        description: "Player data map"
+        allOf:
+          - $ref: "#/definitions/Level"
+        x-nullable: false
+    required:
+      - status
+      - success
+
+  LevelAllResponse:
+    type: array
+    items:
+      $ref: "#/definitions/Level"
+
+  BaseResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+        x-nullable: false
+      success:
+        type: boolean
+        x-nullable: false
+      message:
+        type: string
+    required:
+      - status
+      - success
