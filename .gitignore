@@ -47,9 +47,4 @@ Thumbs.db
 *.mov
 *.wmv
 
-bins/maze-go
-Todo.md
-docker-compose-dev.yml
-tools/client.py
 vendor/
-coverage.out

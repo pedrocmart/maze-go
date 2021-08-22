@@ -30,14 +30,48 @@ func init() {
   "host": "localhost:5000",
   "basePath": "/v1",
   "paths": {
-    "/level": {
+    "/game/{levelId}": {
       "get": {
-        "summary": "Get levels",
+        "summary": "Play game by LevelId",
         "parameters": [
           {
-            "$ref": "#/parameters/levelId"
+            "type": "integer",
+            "name": "levelId",
+            "in": "path",
+            "required": true
           }
         ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          },
+          "400": {
+            "description": "400",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          },
+          "404": {
+            "description": "404",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          },
+          "500": {
+            "description": "500",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          }
+        }
+      }
+    },
+    "/level": {
+      "get": {
+        "summary": "Get all levels",
         "responses": {
           "200": {
             "description": "200",
@@ -82,6 +116,45 @@ func init() {
             "description": "201",
             "schema": {
               "$ref": "#/definitions/LevelResponse"
+            }
+          },
+          "400": {
+            "description": "400",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          },
+          "404": {
+            "description": "404",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          },
+          "500": {
+            "description": "500",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          }
+        }
+      }
+    },
+    "/level/{levelId}": {
+      "get": {
+        "description": "Level by LevelId",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "levelId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "schema": {
+              "$ref": "#/definitions/Level"
             }
           },
           "400": {
@@ -150,7 +223,8 @@ func init() {
           "items": {
             "type": "array",
             "items": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int32"
             }
           },
           "x-nullable": false,
@@ -253,17 +327,48 @@ func init() {
   "host": "localhost:5000",
   "basePath": "/v1",
   "paths": {
-    "/level": {
+    "/game/{levelId}": {
       "get": {
-        "summary": "Get levels",
+        "summary": "Play game by LevelId",
         "parameters": [
           {
             "type": "integer",
             "name": "levelId",
-            "in": "query",
+            "in": "path",
             "required": true
           }
         ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          },
+          "400": {
+            "description": "400",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          },
+          "404": {
+            "description": "404",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          },
+          "500": {
+            "description": "500",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          }
+        }
+      }
+    },
+    "/level": {
+      "get": {
+        "summary": "Get all levels",
         "responses": {
           "200": {
             "description": "200",
@@ -308,6 +413,45 @@ func init() {
             "description": "201",
             "schema": {
               "$ref": "#/definitions/LevelResponse"
+            }
+          },
+          "400": {
+            "description": "400",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          },
+          "404": {
+            "description": "404",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          },
+          "500": {
+            "description": "500",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          }
+        }
+      }
+    },
+    "/level/{levelId}": {
+      "get": {
+        "description": "Level by LevelId",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "levelId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "schema": {
+              "$ref": "#/definitions/Level"
             }
           },
           "400": {
@@ -376,7 +520,8 @@ func init() {
           "items": {
             "type": "array",
             "items": {
-              "type": "integer"
+              "type": "integer",
+              "format": "int32"
             }
           },
           "x-nullable": false,

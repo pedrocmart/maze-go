@@ -57,3 +57,12 @@ func ReturnInvalidMaxLengthError(f string, max int) error {
 	errorMessage := fmt.Sprintf("%s max length is %v", f, max)
 	return errors.New(errorMessage)
 }
+
+func ReturnEmptyFieldError(f string) error {
+	errorMessage := fmt.Sprintf("%s cannot be empty", f)
+	return errors.New(errorMessage)
+}
+
+func ReturnError(f string) error {
+	return errors.New(f)
+}

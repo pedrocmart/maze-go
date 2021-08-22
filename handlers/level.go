@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"encoding/json"
+
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/pedrocmart/maze-go/api/models"
 	"github.com/pedrocmart/maze-go/api/restapi/operations"
@@ -23,6 +25,7 @@ func (r *LevelHandler) PostLevel(params operations.PostLevelParams) middleware.R
 	if params.Payload == nil {
 		return operations.NewPostLevelBadRequest().WithPayload(&models.BaseResponse{
 			Success: consts.HandlerFailed,
+			Status:  consts.HandlerStatusCodeBadRequest,
 			Message: "Empty body"})
 	}
 
@@ -31,13 +34,31 @@ func (r *LevelHandler) PostLevel(params operations.PostLevelParams) middleware.R
 	if err != nil {
 		return operations.NewPostLevelInternalServerError().WithPayload(&models.BaseResponse{
 			Success: consts.HandlerFailed,
+			Status:  consts.HandlerStatusCodeInternalServerError,
 			Message: err.Error()})
+	}
+
+	verr := model.Validate()
+	if verr != nil {
+		return operations.NewPostLevelInternalServerError().WithPayload(&models.BaseResponse{
+			Success: consts.HandlerFailed,
+			Status:  consts.HandlerStatusCodeInternalServerError,
+			Message: verr.Error()})
 	}
 
 	cLevel, cerr := r.repository.Create(model)
 	if cerr != nil {
 		return operations.NewPostLevelInternalServerError().WithPayload(&models.BaseResponse{
 			Success: consts.HandlerFailed,
+			Status:  consts.HandlerStatusCodeInternalServerError,
+			Message: cerr.Error()})
+	}
+
+	var maps [][]int32
+	if err := json.Unmarshal(cLevel.Maps, &maps); err != nil {
+		return operations.NewPostLevelInternalServerError().WithPayload(&models.BaseResponse{
+			Success: consts.HandlerFailed,
+			Status:  consts.HandlerStatusCodeInternalServerError,
 			Message: cerr.Error()})
 	}
 
@@ -48,7 +69,8 @@ func (r *LevelHandler) PostLevel(params operations.PostLevelParams) middleware.R
 		Success: true,
 		LevelData: struct{ models.Level }{
 			models.Level{
-				ID: cLevel.Id,
+				ID:   cLevel.Id,
+				Maps: maps,
 			},
 		},
 	})
@@ -56,7 +78,7 @@ func (r *LevelHandler) PostLevel(params operations.PostLevelParams) middleware.R
 
 // GetLevelID returns the list of levels ordered by created_at descending.
 // http GET ":5000/v1/level/1
-func (r *LevelHandler) GetLevelID(params operations.GetLevelParams) middleware.Responder {
+func (r *LevelHandler) GetLevelID(params operations.GetLevelLevelIDParams) middleware.Responder {
 	levelId := params.LevelID
 
 	// retrieve all the levels for the player
@@ -88,7 +110,7 @@ func (r *LevelHandler) GetLevelID(params operations.GetLevelParams) middleware.R
 	return operations.NewGetLevelOK().WithPayload(payload)
 }
 
-func (r *LevelHandler) GetLevel(params operations.GetLevelParams) middleware.Responder {
+func (r *LevelHandler) GetAllLevels(_ operations.GetLevelParams) middleware.Responder {
 	levels, cerr := r.repository.FindAll()
 	if cerr != nil {
 		return operations.NewGetLevelInternalServerError().WithPayload(&models.BaseResponse{
@@ -121,7 +143,7 @@ func (r *LevelHandler) GetLevel(params operations.GetLevelParams) middleware.Res
 func RegisterLevelHandlers(api *operations.MazeGoAPI, levelRepository repository.Level) {
 	levelHandler := NewLevelHandler(levelRepository)
 
-	// PostLevel saves the given Level data
 	api.PostLevelHandler = operations.PostLevelHandlerFunc(levelHandler.PostLevel)
-	api.GetLevelHandler = operations.GetLevelHandlerFunc(levelHandler.GetLevel)
+	api.GetLevelHandler = operations.GetLevelHandlerFunc(levelHandler.GetAllLevels)
+	api.GetLevelLevelIDHandler = operations.GetLevelLevelIDHandlerFunc(levelHandler.GetLevelID)
 }

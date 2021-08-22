@@ -48,9 +48,7 @@ paths:
             $ref: "#/definitions/BaseResponse"
 
     get:
-      summary: "Get levels"
-      parameters:
-        - $ref: "#/parameters/levelId"
+      summary: "Get all levels"
       responses:
         200:
           description: "200"
@@ -68,7 +66,59 @@ paths:
           description: "500"
           schema:
             $ref: "#/definitions/BaseResponse"
-
+            
+  /level/{levelId}:
+    get:
+      description: "Level by LevelId"
+      parameters:
+        - in: path
+          name: levelId
+          type: integer
+          required: true
+      responses:
+        200:
+          description: "200"
+          schema:
+            $ref: "#/definitions/Level"
+        400:
+          description: "400"
+          schema:
+            $ref: "#/definitions/BaseResponse"
+        404:
+          description: "404"
+          schema:
+            $ref: "#/definitions/BaseResponse"
+        500:
+          description: "500"
+          schema:
+            $ref: "#/definitions/BaseResponse"
+            
+  /game/{levelId}:
+    get:
+      summary: "Play game by LevelId"
+      parameters:
+        - in: path
+          name: levelId
+          type: integer
+          required: true
+      responses:
+        200:
+          description: "200"
+          schema:
+            $ref: "#/definitions/BaseResponse"
+        400:
+          description: "400"
+          schema:
+            $ref: "#/definitions/BaseResponse"
+        404:
+          description: "404"
+          schema:
+            $ref: "#/definitions/BaseResponse"
+        500:
+          description: "500"
+          schema:
+            $ref: "#/definitions/BaseResponse"
+        
 definitions:
   Level:
     title: Level
@@ -85,6 +135,7 @@ definitions:
           type: array
           items:
             type: integer
+            format: int32
         x-nullable: false
         example: [[5,2,4],[2,2,1],[1,2,5],[3,3,1],[2,2,0]]
       createdAt:

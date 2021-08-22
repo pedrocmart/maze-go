@@ -53,9 +53,9 @@ func (r *LevelRepository) FindByLevelId(levelId int64) ([]*models.Level, error) 
 	WHERE id = $1
 	ORDER BY created_at DESC`
 
-	parms := []interface{}{levelId}
+	params := []interface{}{levelId}
 
-	q, err := r.db.Query(queryStr, parms...)
+	q, err := r.db.Query(queryStr, params...)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (r *LevelRepository) FindByLevelId(levelId int64) ([]*models.Level, error) 
 	for q.Next() {
 		level := models.Level{}
 
-		err = q.Scan(&level.Id, &level.Maps)
+		err = q.Scan(&level.Id, &level.Maps, &level.CreatedAt)
 		if err != nil {
 			return nil, err
 		}

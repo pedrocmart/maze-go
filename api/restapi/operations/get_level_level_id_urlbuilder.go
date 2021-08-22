@@ -9,17 +9,24 @@ import (
 	"errors"
 	"net/url"
 	golangswaggerpaths "path"
+	"strings"
+
+	"github.com/go-openapi/swag"
 )
 
-// GetLevelURL generates an URL for the get level operation
-type GetLevelURL struct {
+// GetLevelLevelIDURL generates an URL for the get level level ID operation
+type GetLevelLevelIDURL struct {
+	LevelID int64
+
 	_basePath string
+	// avoid unkeyed usage
+	_ struct{}
 }
 
 // WithBasePath sets the base path for this url builder, only required when it's different from the
 // base path specified in the swagger spec.
 // When the value of the base path is an empty string
-func (o *GetLevelURL) WithBasePath(bp string) *GetLevelURL {
+func (o *GetLevelLevelIDURL) WithBasePath(bp string) *GetLevelLevelIDURL {
 	o.SetBasePath(bp)
 	return o
 }
@@ -27,15 +34,22 @@ func (o *GetLevelURL) WithBasePath(bp string) *GetLevelURL {
 // SetBasePath sets the base path for this url builder, only required when it's different from the
 // base path specified in the swagger spec.
 // When the value of the base path is an empty string
-func (o *GetLevelURL) SetBasePath(bp string) {
+func (o *GetLevelLevelIDURL) SetBasePath(bp string) {
 	o._basePath = bp
 }
 
 // Build a url path and query string
-func (o *GetLevelURL) Build() (*url.URL, error) {
+func (o *GetLevelLevelIDURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/level"
+	var _path = "/level/{levelId}"
+
+	levelID := swag.FormatInt64(o.LevelID)
+	if levelID != "" {
+		_path = strings.Replace(_path, "{levelId}", levelID, -1)
+	} else {
+		return nil, errors.New("levelId is required on GetLevelLevelIDURL")
+	}
 
 	_basePath := o._basePath
 	if _basePath == "" {
@@ -47,7 +61,7 @@ func (o *GetLevelURL) Build() (*url.URL, error) {
 }
 
 // Must is a helper function to panic when the url builder returns an error
-func (o *GetLevelURL) Must(u *url.URL, err error) *url.URL {
+func (o *GetLevelLevelIDURL) Must(u *url.URL, err error) *url.URL {
 	if err != nil {
 		panic(err)
 	}
@@ -58,17 +72,17 @@ func (o *GetLevelURL) Must(u *url.URL, err error) *url.URL {
 }
 
 // String returns the string representation of the path with query string
-func (o *GetLevelURL) String() string {
+func (o *GetLevelLevelIDURL) String() string {
 	return o.Must(o.Build()).String()
 }
 
 // BuildFull builds a full url with scheme, host, path and query string
-func (o *GetLevelURL) BuildFull(scheme, host string) (*url.URL, error) {
+func (o *GetLevelLevelIDURL) BuildFull(scheme, host string) (*url.URL, error) {
 	if scheme == "" {
-		return nil, errors.New("scheme is required for a full url on GetLevelURL")
+		return nil, errors.New("scheme is required for a full url on GetLevelLevelIDURL")
 	}
 	if host == "" {
-		return nil, errors.New("host is required for a full url on GetLevelURL")
+		return nil, errors.New("host is required for a full url on GetLevelLevelIDURL")
 	}
 
 	base, err := o.Build()
@@ -82,6 +96,6 @@ func (o *GetLevelURL) BuildFull(scheme, host string) (*url.URL, error) {
 }
 
 // StringFull returns the string representation of a complete url
-func (o *GetLevelURL) StringFull(scheme, host string) string {
+func (o *GetLevelLevelIDURL) StringFull(scheme, host string) string {
 	return o.Must(o.BuildFull(scheme, host)).String()
 }

@@ -42,8 +42,14 @@ func NewMazeGoAPI(spec *loads.Document) *MazeGoAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
+		GetGameLevelIDHandler: GetGameLevelIDHandlerFunc(func(params GetGameLevelIDParams) middleware.Responder {
+			return middleware.NotImplemented("operation GetGameLevelID has not yet been implemented")
+		}),
 		GetLevelHandler: GetLevelHandlerFunc(func(params GetLevelParams) middleware.Responder {
 			return middleware.NotImplemented("operation GetLevel has not yet been implemented")
+		}),
+		GetLevelLevelIDHandler: GetLevelLevelIDHandlerFunc(func(params GetLevelLevelIDParams) middleware.Responder {
+			return middleware.NotImplemented("operation GetLevelLevelID has not yet been implemented")
 		}),
 		PostLevelHandler: PostLevelHandlerFunc(func(params PostLevelParams) middleware.Responder {
 			return middleware.NotImplemented("operation PostLevel has not yet been implemented")
@@ -84,8 +90,12 @@ type MazeGoAPI struct {
 	//   - application/json
 	JSONProducer runtime.Producer
 
+	// GetGameLevelIDHandler sets the operation handler for the get game level ID operation
+	GetGameLevelIDHandler GetGameLevelIDHandler
 	// GetLevelHandler sets the operation handler for the get level operation
 	GetLevelHandler GetLevelHandler
+	// GetLevelLevelIDHandler sets the operation handler for the get level level ID operation
+	GetLevelLevelIDHandler GetLevelLevelIDHandler
 	// PostLevelHandler sets the operation handler for the post level operation
 	PostLevelHandler PostLevelHandler
 
@@ -165,8 +175,14 @@ func (o *MazeGoAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
+	if o.GetGameLevelIDHandler == nil {
+		unregistered = append(unregistered, "GetGameLevelIDHandler")
+	}
 	if o.GetLevelHandler == nil {
 		unregistered = append(unregistered, "GetLevelHandler")
+	}
+	if o.GetLevelLevelIDHandler == nil {
+		unregistered = append(unregistered, "GetLevelLevelIDHandler")
 	}
 	if o.PostLevelHandler == nil {
 		unregistered = append(unregistered, "PostLevelHandler")
@@ -262,7 +278,15 @@ func (o *MazeGoAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
+	o.handlers["GET"]["/game/{levelId}"] = NewGetGameLevelID(o.context, o.GetGameLevelIDHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
 	o.handlers["GET"]["/level"] = NewGetLevel(o.context, o.GetLevelHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/level/{levelId}"] = NewGetLevelLevelID(o.context, o.GetLevelLevelIDHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}

@@ -30,7 +30,7 @@ type Level struct {
 	// maps
 	// Example: [[5,2,4],[2,2,1],[1,2,5],[3,3,1],[2,2,0]]
 	// Required: true
-	Maps [][]int64 `json:"maps"`
+	Maps [][]int32 `json:"maps"`
 }
 
 // Validate validates this level

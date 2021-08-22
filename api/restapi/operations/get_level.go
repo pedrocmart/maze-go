@@ -31,7 +31,7 @@ func NewGetLevel(ctx *middleware.Context, handler GetLevelHandler) *GetLevel {
 
 /* GetLevel swagger:route GET /level getLevel
 
-Get levels
+Get all levels
 
 */
 type GetLevel struct {
